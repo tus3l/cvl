@@ -12,6 +12,18 @@ body {
   overflow-x: hidden;
 }
 
+/* Global theming variables and responsive base */
+:root {
+  --bg: #000000;
+  --text: #00ff00;
+  --accent: #00ffa5;
+  --accent-blue: #00ffff;
+  --danger: #ff0000;
+}
+
+html { font-size: clamp(14px, 1.6vw, 16px); }
+body { background-color: var(--bg); color: var(--text); }
+
 body::before {
   content: "";
   position: fixed;
@@ -54,11 +66,11 @@ body::before {
 
 .cyber-button {
   background: transparent;
-  border: 2px solid #0f0;
-  color: #0f0;
-  padding: 15px 25px;
+  border: 2px solid var(--text);
+  color: var(--text);
+  padding: clamp(10px, 1.2vw, 15px) clamp(16px, 2vw, 25px);
   font-family: 'Orbitron', monospace;
-  font-size: 14px;
+  font-size: clamp(12px, 1.2vw, 14px);
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -86,12 +98,12 @@ body::before {
 
 .cyber-input {
   background: rgba(0, 255, 0, 0.05);
-  border: 1px solid #0f0;
-  border-left: 4px solid #0f0;
-  color: #0f0;
+  border: 1px solid var(--text);
+  border-left: 4px solid var(--text);
+  color: var(--text);
   padding: 12px 20px;
   font-family: 'Courier New', monospace;
-  font-size: 14px;
+  font-size: clamp(12px, 1.2vw, 14px);
   width: 100%;
   outline: none;
   transition: all 0.3s ease;

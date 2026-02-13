@@ -288,6 +288,12 @@
   .slots-grid { grid-template-columns: 1fr 1fr; }
 }
 
+@media (max-width: 600px) {
+  .slots-grid { grid-template-columns: 1fr; }
+  .slot { min-height: 120px; }
+  .picker-list { grid-template-columns: 1fr; }
+}
+
 /* Picker modal overlay */
 .picker-overlay {
   position: fixed; inset: 0; display: grid; place-items: center;
