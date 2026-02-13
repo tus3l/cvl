@@ -51,7 +51,7 @@ const Market = ({ user, backendBase }) => {
 
   // Live updates via socket
   useEffect(() => {
-    const base = backendBase || 'http://localhost:5001';
+    const base = backendBase || 'https://cvl-backend-n5p6.onrender.com';
     const socket = io(base, { withCredentials: true });
     socket.on('market_new_listing', (listing) => {
       // Only add if matches current filter

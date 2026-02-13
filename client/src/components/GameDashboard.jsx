@@ -70,7 +70,7 @@ const GameDashboard = () => {
 
   // Ghost broadcasts via Socket.io
   useEffect(() => {
-    const base = backendBase || 'http://localhost:5001';
+    const base = backendBase || 'https://cvl-backend-n5p6.onrender.com';
     const socket = io(base, { withCredentials: true });
     socket.on('ghost_level_up', (payload) => {
       // Show ephemeral toast and refresh leaderboard

@@ -16,27 +16,45 @@ const systemRoutes = require('./routes/systemRoutes');
 
 const app = express();
 const httpServer = http.createServer(app);
-// Allow any localhost port for development (handles 3000,3006,etc.)
-const allowOriginRegex = /^http:\/\/localhost:\d+$/;
+
+// CORS origins: from env (comma-separated) or sensible defaults
+const envOrigins = process.env.CORS_ALLOWED_ORIGINS
+  ? process.env.CORS_ALLOWED_ORIGINS.split(',').map(s => s.trim()).filter(Boolean)
+  : null;
+const allowedOrigins = envOrigins && envOrigins.length > 0
+  ? envOrigins
+  : [
+      'http://localhost:5173',
+      'https://cvl-7wxp914bn-tus3s-projects.vercel.app',
+      'https://cvl-eta.vercel.app'
+    ];
+
 const io = new Server(httpServer, {
   cors: {
     origin: (origin, callback) => {
-      if (!origin || allowOriginRegex.test(origin)) return callback(null, true);
-      return callback(null, false);
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin) || /^http:\/\/localhost:\d+$/.test(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error('Socket.IO CORS blocked'), false);
     },
     credentials: true,
-    methods: ['GET', 'POST']
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
   }
 });
 setIo(io);
 
-// Express CORS: mirror the request origin if it matches localhost:any
+// Express CORS: whitelist Vercel app and localhost:5173 for dev
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowOriginRegex.test(origin)) return callback(null, true);
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin) || /^http:\/\/localhost:\d+$/.test(origin)) {
+      return callback(null, true);
+    }
     return callback(new Error('CORS blocked'), false);
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
 app.use(express.json());
 app.use(cookieParser());
