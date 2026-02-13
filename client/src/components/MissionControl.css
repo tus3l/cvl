@@ -1,8 +1,8 @@
 .mission-control {
   min-height: 100vh;
   padding: 20px;
-  background: #0a0a0a;
-  color: #00ff00;
+  background: var(--bg);
+  color: var(--text);
 }
 
 .mission-header {
@@ -10,13 +10,13 @@
   margin-bottom: 30px;
   padding: 20px;
   background: rgba(0, 255, 0, 0.05);
-  border: 2px solid #00ff00;
+  border: 2px solid var(--text);
   border-radius: 10px;
 }
 
 .neon-title {
   font-size: 2.5rem;
-  text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00;
+  text-shadow: 0 0 10px var(--text), 0 0 20px var(--text), 0 0 30px var(--text);
   margin: 0 0 20px 0;
   font-family: 'Courier New', monospace;
 }
@@ -35,12 +35,12 @@
 }
 
 .stat-label {
-  color: #00ff00;
+  color: var(--text);
   font-weight: bold;
 }
 
 .stat-value {
-  color: #00ffff;
+  color: var(--accent-blue);
   font-size: 1.2rem;
   font-weight: bold;
 }
@@ -49,9 +49,9 @@
   margin-top: 15px;
   padding: 15px;
   background: rgba(255, 0, 0, 0.2);
-  border: 2px solid #ff0000;
+  border: 2px solid var(--danger);
   border-radius: 5px;
-  color: #ff0000;
+  color: var(--danger);
   font-weight: bold;
   animation: pulse 2s infinite;
 }
@@ -124,7 +124,7 @@
 
 .mission-card {
   padding: 20px;
-  border: 2px solid #00ff00;
+  border: 2px solid var(--text);
   border-radius: 8px;
   background: rgba(0, 20, 0, 0.8);
   cursor: pointer;
@@ -132,7 +132,7 @@
 }
 
 .mission-card.danger {
-  border-color: #ff0000;
+  border-color: var(--danger);
   background: rgba(20, 0, 0, 0.8);
 }
 
@@ -144,12 +144,12 @@
   font-size: 1.4rem;
   font-weight: bold;
   margin-bottom: 10px;
-  color: #00ffff;
+  color: var(--accent-blue);
 }
 
 .mission-difficulty {
   margin-bottom: 10px;
-  color: #00ff00;
+  color: var(--text);
 }
 
 .value-high {

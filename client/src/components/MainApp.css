@@ -7,9 +7,9 @@
 }
 
 .loading-text {
-  font-size: 24px;
+  font-size: clamp(18px, 2.2vw, 24px);
   font-family: 'Orbitron', monospace;
-  color: #0f0;
+  color: var(--text);
 }
 
 .main-app {

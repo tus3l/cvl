@@ -10,14 +10,14 @@
   width: 100%;
   max-width: 600px;
   background: rgba(0, 0, 0, 0.9);
-  border: 2px solid #0f0;
+  border: 2px solid var(--text);
   box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
 }
 
 .terminal-header {
   background: rgba(0, 255, 0, 0.1);
   padding: 10px 20px;
-  border-bottom: 2px solid #0f0;
+  border-bottom: 2px solid var(--text);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -33,12 +33,12 @@
   height: 12px;
   border-radius: 50%;
   background: rgba(0, 255, 0, 0.2);
-  border: 1px solid #0f0;
+  border: 1px solid var(--text);
 }
 
 .indicator.active {
-  background: #0f0;
-  box-shadow: 0 0 10px #0f0;
+  background: var(--text);
+  box-shadow: 0 0 10px var(--text);
   animation: blink 2s infinite;
 }
 
@@ -48,8 +48,8 @@
 
 .boot-sequence {
   font-family: 'Courier New', monospace;
-  font-size: 12px;
-  color: #0f0;
+  font-size: clamp(11px, 1.1vw, 12px);
+  color: var(--text);
   min-height: 80px;
   margin-bottom: 20px;
   white-space: pre-wrap;
@@ -70,8 +70,8 @@
 
 .input-group label {
   font-family: 'Courier New', monospace;
-  font-size: 14px;
-  color: #0f0;
+  font-size: clamp(12px, 1.2vw, 14px);
+  color: var(--text);
 }
 
 .button-group {
@@ -92,13 +92,13 @@
 }
 
 .cyber-button.secondary {
-  border-color: #0ff;
-  color: #0ff;
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
 }
 
 .cyber-button.secondary:hover {
-  box-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
-  text-shadow: 0 0 5px #0ff;
+  box-shadow: 0 0 10px var(--accent-blue), 0 0 20px var(--accent-blue);
+  text-shadow: 0 0 5px var(--accent-blue);
 }
 
 @media (max-width: 600px) {
