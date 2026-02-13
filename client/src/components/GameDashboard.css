@@ -1,0 +1,726 @@
+.game-dashboard {
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 2px solid #0f0;
+  margin-bottom: 30px;
+}
+
+.user-info h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.stats {
+  display: flex;
+  gap: 20px;
+  font-family: 'Courier New', monospace;
+  color: #0ff;
+}
+
+.logout-btn {
+  background: rgba(255, 0, 0, 0.1);
+  border-color: #f00;
+  color: #f00;
+}
+
+.logout-btn:hover {
+  box-shadow: 0 0 10px #f00;
+}
+
+.dashboard-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.tab-button {
+  padding: 15px 30px;
+  background: transparent;
+  border: 2px solid #00ff00;
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.3s;
+  text-transform: uppercase;
+}
+
+.tab-button:hover {
+  background: rgba(0, 255, 0, 0.1);
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+}
+
+.tab-button.active {
+  background: #00ff00;
+  color: #000;
+  box-shadow: 0 0 20px #00ff00;
+}
+
+.defense-panel {
+  padding: 40px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #00ff00;
+  border-radius: 10px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.defense-panel h2 {
+  color: #00ff00;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px #00ff00;
+}
+
+.defense-info {
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(0, 255, 0, 0.05);
+  border: 2px solid #00ff00;
+  border-radius: 8px;
+}
+
+.defense-info p {
+  color: #00ff00;
+  font-size: 1.2rem;
+  margin: 15px 0;
+}
+
+.exposure-status {
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(255, 0, 0, 0.2);
+  border: 2px solid #ff0000;
+  border-radius: 5px;
+  color: #ff0000;
+  font-weight: bold;
+  animation: pulse 2s infinite;
+}
+
+.dashboard-content {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.wallet-panel, .hack-panel, .inventory-panel {
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #0f0;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+}
+
+.wallet-panel h2, .hack-panel h2, .inventory-panel h2 {
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.wallet-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+  font-family: 'Courier New', monospace;
+}
+
+.hack-panel {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cost-info {
+  color: #0ff;
+  font-family: 'Courier New', monospace;
+}
+
+/* Slot Machine Styles */
+.slot-machine {
+  margin: 30px 0;
+  padding: 30px;
+  background: rgba(0, 0, 0, 0.9);
+  border: 3px solid #00ff00;
+  border-radius: 15px;
+  box-shadow: 0 0 30px rgba(0, 255, 0, 0.3), inset 0 0 20px rgba(0, 255, 0, 0.1);
+}
+
+.slots-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.slot-reel {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(145deg, #0a0a0a, #1a1a1a);
+  border: 3px solid #00ff00;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.4), inset 0 0 15px rgba(0, 255, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.slot-reel.spinning {
+  animation: slot-glow 0.5s infinite;
+  border-color: #ffff00;
+}
+
+.slot-reel.stopped {
+  border-color: #00ff00;
+  box-shadow: 0 0 30px rgba(0, 255, 0, 0.8);
+}
+
+@keyframes slot-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 255, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255, 255, 0, 0.8);
+  }
+}
+
+.slot-icon {
+  font-size: 5rem;
+  filter: drop-shadow(0 0 10px currentColor);
+  user-select: none;
+}
+
+/* Slot image (for FlashHacker legendary and money bag) */
+.slot-image {
+  width: 112px;
+  height: 112px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 15px rgba(255, 128, 0, 0.8));
+  user-select: none;
+}
+
+/* Enlarge money (green) and diamond (blue) images for clarity */
+.slot-image.money-bag-image {
+  width: 120px;
+  height: 120px;
+  filter: drop-shadow(0 0 20px rgba(0, 255, 0, 0.9));
+}
+
+.slot-image.diamond-image {
+  width: 120px;
+  height: 120px;
+  filter: drop-shadow(0 0 20px rgba(0, 128, 255, 0.9));
+}
+
+/* VPN (rare) and DDoS (epic) and FlashHacker (legendary) size tweaks */
+.slot-image.vpn-image {
+  width: 118px;
+  height: 118px;
+  filter: drop-shadow(0 0 18px rgba(0, 128, 255, 0.85));
+}
+
+.slot-image.ddos-image {
+  width: 118px;
+  height: 118px;
+  filter: drop-shadow(0 0 18px rgba(163, 53, 238, 0.85));
+}
+
+.slot-image.flashhacker-image {
+  width: 122px;
+  height: 122px;
+  filter: drop-shadow(0 0 22px rgba(255, 128, 0, 0.95));
+}
+
+/* New items sizing & glow for consistency */
+.slot-image.rusty-image {
+  width: 116px;
+  height: 116px;
+  filter: drop-shadow(0 0 20px rgba(0, 255, 0, 0.9));
+}
+
+.slot-image.rtx-image {
+  width: 120px;
+  height: 120px;
+  filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.9));
+}
+
+.slot-image.quantum-image {
+  width: 118px;
+  height: 118px;
+  filter: drop-shadow(0 0 20px rgba(163, 53, 238, 0.9));
+}
+
+.slot-image.zero-day-image {
+  width: 122px;
+  height: 122px;
+  filter: drop-shadow(0 0 24px rgba(255, 255, 255, 0.35)); /* subtle white glow; rainbow border on reel */
+}
+
+/* Special effects for rare slot icons - using dynamic classes */
+.slot-reel.stopped .slot-icon {
+  animation: none;
+}
+
+/* Legendary (🔥) - Orange glow */
+.slot-reel.legendary-icon {
+  box-shadow: 0 0 50px rgba(255, 128, 0, 1), 0 0 30px rgba(255, 128, 0, 0.8);
+  border-color: #ff8000 !important;
+  animation: legendary-pulse 1.5s infinite;
+}
+
+/* Epic (⭐) - Purple glow */
+.slot-reel.epic-icon {
+  box-shadow: 0 0 40px rgba(163, 53, 238, 0.9), 0 0 20px rgba(163, 53, 238, 0.6);
+  border-color: #a335ee !important;
+  animation: epic-pulse 2s infinite;
+}
+
+/* Rare (💎) - Blue glow */
+.slot-reel.rare-icon {
+  box-shadow: 0 0 35px rgba(0, 128, 255, 0.8), 0 0 20px rgba(0, 128, 255, 0.5);
+  border-color: #0080ff !important;
+  animation: rare-pulse 2.5s infinite;
+}
+
+/* Money (💰) - Green glow enhanced */
+.slot-reel.money-icon {
+  box-shadow: 0 0 40px rgba(0, 255, 0, 1), 0 0 25px rgba(0, 255, 0, 0.8);
+  border-color: #00ff00 !important;
+  animation: money-pulse 2s infinite;
+}
+
+/* Custom per-item color overrides */
+.slot-reel.green-icon {
+  box-shadow: 0 0 40px rgba(0, 255, 0, 1), 0 0 25px rgba(0, 255, 0, 0.8);
+  border-color: #00ff00 !important;
+}
+
+.slot-reel.blue-icon {
+  box-shadow: 0 0 35px rgba(0, 128, 255, 0.9), 0 0 20px rgba(0, 128, 255, 0.6);
+  border-color: #0080ff !important;
+}
+
+.slot-reel.gold-icon {
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.9), 0 0 22px rgba(255, 215, 0, 0.6);
+  border-color: #ffd700 !important;
+}
+
+.slot-reel.purple-icon {
+  box-shadow: 0 0 40px rgba(163, 53, 238, 0.9), 0 0 22px rgba(163, 53, 238, 0.6);
+  border-color: #a335ee !important;
+}
+
+/* Rainbow animated border for Zero-Day in slot reels */
+.slot-reel.rainbow-icon { position: relative; overflow: visible; }
+@property --slot-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@keyframes slotBorderRotate { to { --slot-angle: 360deg; } }
+.slot-reel.rainbow-icon::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 12px;
+  padding: 2px;
+  background: conic-gradient(from var(--slot-angle), red, magenta, blue, cyan, lime, yellow, red);
+  -webkit-mask:
+    linear-gradient(#0000, #000 0) content-box,
+    linear-gradient(#000, #000);
+  mask-composite: exclude;
+  animation: slotBorderRotate 6s linear infinite;
+  z-index: 0;
+}
+
+@keyframes legendary-pulse {
+  0%, 100% {
+    box-shadow: 0 0 50px rgba(255, 128, 0, 1), 0 0 30px rgba(255, 128, 0, 0.8);
+  }
+  50% {
+    box-shadow: 0 0 70px rgba(255, 128, 0, 1), 0 0 50px rgba(255, 128, 0, 1);
+  }
+}
+
+@keyframes epic-pulse {
+  0%, 100% {
+    box-shadow: 0 0 40px rgba(163, 53, 238, 0.9), 0 0 20px rgba(163, 53, 238, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 60px rgba(163, 53, 238, 1), 0 0 40px rgba(163, 53, 238, 0.8);
+  }
+}
+
+@keyframes rare-pulse {
+  0%, 100% {
+    box-shadow: 0 0 35px rgba(0, 128, 255, 0.8), 0 0 20px rgba(0, 128, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 55px rgba(0, 128, 255, 1), 0 0 35px rgba(0, 128, 255, 0.7);
+  }
+}
+
+@keyframes money-pulse {
+  0%, 100% {
+    box-shadow: 0 0 40px rgba(0, 255, 0, 1), 0 0 25px rgba(0, 255, 0, 0.8);
+  }
+  50% {
+    box-shadow: 0 0 60px rgba(0, 255, 0, 1), 0 0 45px rgba(0, 255, 0, 1);
+  }
+}
+
+.slot-reel.spinning .slot-icon {
+  animation: icon-blur 0.2s infinite;
+  filter: blur(4px);
+}
+
+@keyframes icon-blur {
+  0%, 100% { filter: blur(4px); }
+  50% { filter: blur(6px); }
+}
+
+/* Money Reward Styles */
+.money-reward {
+  background: linear-gradient(145deg, #1a3a1a, #0a2a0a);
+  border-color: #00ff00 !important;
+  box-shadow: 0 0 40px rgba(0, 255, 0, 0.6);
+}
+
+/* Diamond Jackpot Reward - Special Blue Glow */
+.diamond-reward {
+  background: linear-gradient(145deg, #001a3a, #000a2a) !important;
+  border-color: #0080ff !important;
+  box-shadow: 0 0 60px rgba(0, 128, 255, 1), 0 0 40px rgba(0, 128, 255, 0.8) !important;
+  animation: diamond-mega-pulse 2s infinite;
+}
+
+@keyframes diamond-mega-pulse {
+  0%, 100% {
+    box-shadow: 0 0 60px rgba(0, 128, 255, 1), 0 0 40px rgba(0, 128, 255, 0.8);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 100px rgba(0, 128, 255, 1), 0 0 70px rgba(0, 128, 255, 1);
+    transform: scale(1.02);
+  }
+}
+
+.reward-amount {
+  font-size: 2.5rem;
+  color: #00ff00;
+  font-weight: bold;
+  text-shadow: 0 0 20px #00ff00;
+  margin: 20px 0;
+  animation: pulse 1.5s infinite;
+}
+
+.xp-gain {
+  color: #00ffff;
+  font-size: 1.2rem;
+  margin: 10px 0;
+  font-weight: bold;
+}
+
+.hack-button {
+  font-size: 20px;
+  padding: 20px 40px;
+  margin: 20px 0;
+}
+
+.hacking-animation {
+  min-height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hack-screen {
+  width: 100%;
+  text-align: center;
+}
+
+.hack-text {
+  font-size: 18px;
+  color: #0f0;
+  margin-bottom: 20px;
+  font-family: 'Courier New', monospace;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 20px;
+  background: rgba(0, 255, 0, 0.1);
+  border: 1px solid #0f0;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0f0, #0ff);
+  box-shadow: 0 0 10px #0f0;
+}
+
+.reward-display {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.reward-card {
+  background: rgba(0, 0, 0, 0.9);
+  border: 3px solid;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 0 30px currentColor;
+  animation: glitch 0.5s;
+}
+
+.reward-card h3 {
+  font-size: 24px;
+  margin-bottom: 15px;
+  text-shadow: 0 0 10px currentColor;
+}
+
+.reward-image {
+  max-width: 200px;
+  max-height: 200px;
+  margin: 20px 0;
+  filter: drop-shadow(0 0 10px currentColor);
+}
+
+.reward-name {
+  font-family: 'Courier New', monospace;
+  margin: 10px 0;
+}
+
+.success-msg {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.reward-image.vpn-image {
+  transform: scale(1.08);
+  filter: drop-shadow(0 0 22px rgba(0, 128, 255, 0.9));
+}
+
+.reward-image.ddos-image {
+  transform: scale(1.08);
+  filter: drop-shadow(0 0 22px rgba(163, 53, 238, 0.9));
+}
+
+.reward-image.flashhacker-image {
+  transform: scale(1.12);
+  filter: drop-shadow(0 0 24px rgba(255, 128, 0, 1));
+}
+
+.error-msg {
+  font-family: 'Courier New', monospace;
+  margin-top: 10px;
+}
+
+.inventory-panel {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.inventory-count {
+  margin-bottom: 15px;
+  color: #0ff;
+  font-family: 'Courier New', monospace;
+}
+
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.inventory-item {
+  aspect-ratio: 1;
+  border: 2px solid;
+  padding: 5px;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Inventory rarity glow styles */
+.inventory-item.rarity-common {
+  border-color: #808080;
+  box-shadow: 0 0 12px rgba(128, 128, 128, 0.4);
+}
+
+.inventory-item.rarity-rare {
+  border-color: #0080ff;
+  box-shadow: 0 0 24px rgba(0, 128, 255, 0.8), inset 0 0 10px rgba(0, 128, 255, 0.4);
+}
+
+.inventory-item.rarity-epic {
+  border-color: #a335ee;
+  box-shadow: 0 0 24px rgba(163, 53, 238, 0.8), inset 0 0 10px rgba(163, 53, 238, 0.4);
+}
+
+.inventory-item.rarity-legendary {
+  border-color: #ff8000;
+  box-shadow: 0 0 28px rgba(255, 128, 0, 1), inset 0 0 12px rgba(255, 128, 0, 0.6);
+}
+
+.inventory-item img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.inventory-item img.inv-img.vpn-image {
+  transform: scale(1.08);
+  filter: drop-shadow(0 0 14px rgba(0, 128, 255, 0.7));
+}
+
+.inventory-item img.inv-img.ddos-image {
+  transform: scale(1.08);
+  filter: drop-shadow(0 0 14px rgba(163, 53, 238, 0.7));
+}
+
+.inventory-item img.inv-img.flashhacker-image {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 16px rgba(255, 128, 0, 0.9));
+}
+
+@media (max-width: 1024px) {
+  .dashboard-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .inventory-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* XP Progress Bar */
+.xp-progress-container {
+  margin-top: 15px;
+  width: 100%;
+}
+
+.xp-progress-bar {
+  width: 100%;
+  height: 25px;
+  background: linear-gradient(145deg, #0a0a0a, #1a1a1a);
+  border: 2px solid #00ff00;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.2), 0 0 15px rgba(0, 255, 0, 0.3);
+}
+
+.xp-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00ff00, #00ff88, #00ffff);
+  transition: width 0.5s ease-out;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+  border-radius: 10px;
+  animation: xp-pulse 2s infinite;
+}
+
+@keyframes xp-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.xp-progress-text {
+  display: block;
+  text-align: center;
+  margin-top: 8px;
+  color: #00ffff;
+  font-size: 0.9rem;
+  font-family: 'Courier New', monospace;
+  text-transform: uppercase;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.8);
+}
+
+/* Level Up Notification */
+.level-up-notification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(145deg, rgba(0, 0, 0, 0.95), rgba(20, 20, 20, 0.95));
+  border: 4px solid #FFD700;
+  border-radius: 20px;
+  padding: 40px 60px;
+  text-align: center;
+  z-index: 10000;
+  box-shadow: 
+    0 0 50px rgba(255, 215, 0, 0.8),
+    0 0 100px rgba(255, 215, 0, 0.5),
+    inset 0 0 30px rgba(255, 215, 0, 0.2);
+  animation: level-up-glow 1.5s infinite;
+}
+
+@keyframes level-up-glow {
+  0%, 100% {
+    box-shadow: 
+      0 0 50px rgba(255, 215, 0, 0.8),
+      0 0 100px rgba(255, 215, 0, 0.5),
+      inset 0 0 30px rgba(255, 215, 0, 0.2);
+  }
+  50% {
+    box-shadow: 
+      0 0 70px rgba(255, 215, 0, 1),
+      0 0 130px rgba(255, 215, 0, 0.7),
+      inset 0 0 50px rgba(255, 215, 0, 0.3);
+  }
+}
+
+.level-up-notification h2 {
+  margin-bottom: 20px;
+  font-size: 3rem;
+  animation: level-up-text 1s ease-in-out infinite;
+}
+
+@keyframes level-up-text {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.level-up-notification p {
+  margin: 10px 0;
+  font-family: 'Courier New', monospace;
+}
+
+/* Leaderboard Styles */
+.leaderboard-container { margin-top: 20px; }
+.lb-controls { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+.leaderboard-table { border: 1px solid #0f0; border-radius: 6px; overflow: hidden; }
+.lb-header, .lb-row { display: grid; grid-template-columns: 40px 1fr 80px 80px 120px; gap: 8px; padding: 8px 12px; }
+.lb-header { background: rgba(0,255,0,0.1); font-weight: bold; }
+.lb-row:nth-child(odd) { background: rgba(0,255,0,0.05); }
+.lb-row span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Toast Styles */
+.toast-container { position: fixed; right: 20px; bottom: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+.toast { background: rgba(0,0,0,0.85); border: 2px solid #0f0; color: #0f0; padding: 10px 14px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,255,0,0.3); font-family: 'Courier New', monospace; }
+.toast.level { border-color: #FFD700; color: #FFD700; box-shadow: 0 0 10px rgba(255,215,0,0.6); }
+.toast.win { border-color: #ff8000; color: #ff8000; box-shadow: 0 0 10px rgba(255,128,0,0.6); }

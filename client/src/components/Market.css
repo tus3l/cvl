@@ -1,0 +1,79 @@
+.market-container { padding: 12px; color: #c8ffea; font-family: 'VT323', monospace; }
+.market-global-banner { margin-bottom: 8px; color: #baffea; font-size: 18px; text-shadow: 0 0 8px rgba(0,255,165,0.5); border-left: 3px solid rgba(0,255,165,0.45); padding-left: 8px; }
+.market-controls { display: flex; gap: 16px; margin-bottom: 10px; }
+.market-controls label { margin-right: 6px; }
+.market-message { margin: 8px 0; color: #ff8080; }
+.market-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.market-card { border: 1px solid rgba(0,255,165,0.35); background: rgba(0,20,18,0.35); border-radius: 8px; overflow: hidden; }
+.market-thumb { height: 180px; display: flex; align-items: center; justify-content: center; background: rgba(0,255,165,0.08); }
+.market-thumb img { max-width: 160px; max-height: 160px; object-fit: contain; image-rendering: pixelated; }
+/* Enlarge Rusty RAM specifically for better visibility */
+.market-thumb img[src$="RustyRAM.png"] { max-width: 180px; max-height: 180px; }
+.market-info { padding: 8px; }
+.market-title { font-size: 20px; color: #baffea; }
+.market-countdown { color: #83ffd6; font-size: 14px; margin-top: 2px; }
+.market-meta { display: flex; align-items: center; justify-content: space-between; margin: 6px 0; }
+.seller-badge.player { color: #00ff66; }
+.seller-badge.bot { color: #888; }
+.market-price { color: #ffd700; font-weight: bold; }
+.sell-panel { margin-top: 16px; border-top: 1px dashed rgba(0,255,165,0.25); padding-top: 10px; }
+.sell-controls { display: flex; gap: 8px; align-items: center; }
+.sell-controls select, .sell-controls input { background: #0b0f0f; color: #c8ffea; border: 1px solid rgba(0,255,165,0.35); border-radius: 4px; padding: 4px; }
+.tax-note { color: #83ffd6; opacity: 0.8; font-size: 14px; }
+
+/* Rarity accents */
+.market-card.rarity-rare { border-color: rgba(0,128,255,0.45); }
+.market-card.rarity-epic { border-color: rgba(163,53,238,0.45); }
+.market-card.rarity-legendary { border-color: rgba(255,128,0,0.55); }
+
+/* Special glitch aura for ultra items */
+@keyframes glitchAura {
+	0% { box-shadow: 0 0 8px rgba(255,0,0,0.0), inset 0 0 0 rgba(0,0,0,0); }
+	50% { box-shadow: 0 0 14px rgba(255,0,0,0.45), inset 0 0 12px rgba(255,255,255,0.08); }
+	100% { box-shadow: 0 0 8px rgba(255,0,0,0.0), inset 0 0 0 rgba(0,0,0,0); }
+}
+.market-card.code-zero_day { 
+	animation: glitchAura 2.6s infinite;
+	border-color: rgba(255,128,0,0.85);
+}
+
+/* Rainbow animated border for Zero-Day to show ultimate rarity */
+.market-card.code-zero_day { position: relative; overflow: visible; }
+@property --angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@keyframes rotateBorder { to { --angle: 360deg; } }
+.market-card.code-zero_day::before {
+	content: '';
+	position: absolute;
+	inset: -2px;
+	border-radius: 10px;
+	padding: 2px;
+	background: conic-gradient(from var(--angle), red, magenta, blue, cyan, lime, yellow, red);
+	-webkit-mask:
+		linear-gradient(#0000, #000 0) content-box,
+		linear-gradient(#000, #000);
+	mask-composite: exclude;
+	animation: rotateBorder 6s linear infinite;
+	z-index: 0;
+}
+
+/* Item-specific color accents */
+.market-card.code-rusty_cooling,
+.market-card.code-rusty_cpu {
+	border-color: rgba(0,255,0,0.75);
+	box-shadow: inset 0 0 14px rgba(0,255,0,0.30);
+}
+
+.market-card.code-vpn_active {
+	border-color: rgba(0,128,255,0.65);
+	box-shadow: inset 0 0 12px rgba(0,128,255,0.20);
+}
+
+.market-card.code-rtx_4090_mining {
+	border-color: rgba(255,215,0,0.70); /* gold */
+	box-shadow: inset 0 0 14px rgba(255,215,0,0.25);
+}
+
+.market-card.code-quantum_cpu {
+	border-color: rgba(163,53,238,0.75); /* purple */
+	box-shadow: inset 0 0 14px rgba(163,53,238,0.30);
+}

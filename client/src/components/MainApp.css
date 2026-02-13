@@ -1,0 +1,19 @@
+.loading-screen {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #000;
+}
+
+.loading-text {
+  font-size: 24px;
+  font-family: 'Orbitron', monospace;
+  color: #0f0;
+}
+
+.main-app {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #000000 0%, #001a00 100%);
+  position: relative;
+}

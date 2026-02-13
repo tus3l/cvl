@@ -1,0 +1,187 @@
+.mission-control {
+  min-height: 100vh;
+  padding: 20px;
+  background: #0a0a0a;
+  color: #00ff00;
+}
+
+.mission-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: rgba(0, 255, 0, 0.05);
+  border: 2px solid #00ff00;
+  border-radius: 10px;
+}
+
+.neon-title {
+  font-size: 2.5rem;
+  text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00;
+  margin: 0 0 20px 0;
+  font-family: 'Courier New', monospace;
+}
+
+.hacker-stats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.stat-label {
+  color: #00ff00;
+  font-weight: bold;
+}
+
+.stat-value {
+  color: #00ffff;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.exposure-warning {
+  margin-top: 15px;
+  padding: 15px;
+  background: rgba(255, 0, 0, 0.2);
+  border: 2px solid #ff0000;
+  border-radius: 5px;
+  color: #ff0000;
+  font-weight: bold;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.mission-sectors {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.sector {
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px solid;
+}
+
+.government-sector {
+  border-color: #ff0000;
+  background: rgba(255, 0, 0, 0.05);
+}
+
+.private-sector {
+  border-color: #00ff00;
+  background: rgba(0, 255, 0, 0.05);
+}
+
+/* Daily sector */
+.daily-sector {
+  border-color: #FFD700;
+  background: rgba(255, 215, 0, 0.05);
+}
+.daily-sector .mission-card.claimable {
+  border-color: #FFD700;
+  box-shadow: 0 0 15px rgba(255,215,0,0.4);
+}
+.daily-sector .mission-actions { display: flex; gap: 10px; margin-top: 10px; }
+.daily-sector .mission-progress { color: #0ff; font-family: 'Courier New', monospace; margin-top: 6px; }
+
+.sector-header {
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid currentColor;
+}
+
+.sector-header h2 {
+  font-size: 1.8rem;
+  margin: 0 0 10px 0;
+  font-family: 'Courier New', monospace;
+}
+
+.sector-subtitle {
+  color: #888;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.mission-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.mission-card {
+  padding: 20px;
+  border: 2px solid #00ff00;
+  border-radius: 8px;
+  background: rgba(0, 20, 0, 0.8);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mission-card.danger {
+  border-color: #ff0000;
+  background: rgba(20, 0, 0, 0.8);
+}
+
+.mission-card:hover {
+  transform: translateY(-5px);
+}
+
+.mission-name {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #00ffff;
+}
+
+.mission-difficulty {
+  margin-bottom: 10px;
+  color: #00ff00;
+}
+
+.value-high {
+  color: #ff0000;
+  font-weight: bold;
+}
+
+.value-medium {
+  color: #ffaa00;
+  font-weight: bold;
+}
+
+.mission-rewards {
+  display: flex;
+  gap: 20px;
+  margin: 10px 0;
+  font-size: 1.1rem;
+}
+
+.mission-rewards div {
+  color: #00ffff;
+}
+
+.mission-desc {
+  margin-top: 10px;
+  color: #888;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 1100px) {
+  .mission-sectors {
+    grid-template-columns: 1fr;
+  }
+}
