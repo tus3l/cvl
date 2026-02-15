@@ -135,8 +135,11 @@ const attackPlayer = async (req, res) => {
 
     let outcome = {};
     let attackerUpdate = { crypto_credits: attacker.crypto_credits - 100 };
+    
+    // Ensure intrusion_logs is always an array
+    const currentLogs = Array.isArray(target.intrusion_logs) ? target.intrusion_logs : [];
     let targetUpdate = {
-      intrusion_logs: [...(target.intrusion_logs || []), intrusionLog].slice(-10)
+      intrusion_logs: [...currentLogs, intrusionLog].slice(-10)
     };
 
     if (roll <= successChance) {
@@ -214,7 +217,9 @@ const attackPlayer = async (req, res) => {
         rare_gems: updatedAttacker.rare_gems,
         reputation: updatedAttacker.reputation,
         equipment: updatedAttacker.equipment || {},
-        equipped_loadout: updatedAttacker.equipped_loadout || {} // For backward compatibility
+        equipped_loadout: updatedAttacker.equipped_loadout || {}, // For backward compatibility
+        ddos_freeze_until: updatedAttacker.ddos_freeze_until || null,
+        inventory: updatedAttacker.inventory || []
       },
       stats: {
         attack_score: attackScore,
@@ -241,9 +246,12 @@ const getIntrusionLogs = async (req, res) => {
       .eq('id', userId)
       .single();
 
+    // Ensure intrusion_logs is always an array
+    const logs = Array.isArray(user?.intrusion_logs) ? user.intrusion_logs : [];
+    
     res.json({
       success: true,
-      logs: user?.intrusion_logs || []
+      logs: logs
     });
 
   } catch (error) {

@@ -80,6 +80,14 @@ const MatrixBreach = ({ cpuTier = 0, firewallLevel = 0, user = null, onSuccess, 
     const startedAt = performance.now();
     const isDDoSFrozen = user?.ddos_freeze_until && new Date(user.ddos_freeze_until) > new Date();
     
+    // Debug logging
+    console.log('=== MatrixBreach DDoS Check ===');
+    console.log('User:', user?.username);
+    console.log('ddos_freeze_until:', user?.ddos_freeze_until);
+    console.log('Current time:', new Date().toISOString());
+    console.log('isDDoSFrozen:', isDDoSFrozen);
+    console.log('==============================');
+    
     timerRef.current && clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
