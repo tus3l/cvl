@@ -25,10 +25,13 @@ const PvPPanel = ({ user, updateUser }) => {
     try {
       const res = await axios.get('/api/pvp/players');
       if (res.data.success) {
-        setPlayers(res.data.players);
+        // Ensure players is an array
+        const players = Array.isArray(res.data.players) ? res.data.players : [];
+        setPlayers(players);
       }
     } catch (error) {
       console.error('Failed to load players:', error);
+      setPlayers([]); // Set empty array on error
     }
   };
 
@@ -36,10 +39,13 @@ const PvPPanel = ({ user, updateUser }) => {
     try {
       const res = await axios.get('/api/pvp/intrusion-logs');
       if (res.data.success) {
-        setIntrusionLogs(res.data.logs);
+        // Ensure logs is an array
+        const logs = Array.isArray(res.data.logs) ? res.data.logs : [];
+        setIntrusionLogs(logs);
       }
     } catch (error) {
       console.error('Failed to load logs:', error);
+      setIntrusionLogs([]); // Set empty array on error
     }
   };
 
@@ -128,7 +134,7 @@ const PvPPanel = ({ user, updateUser }) => {
           </div>
 
           <div className="players-grid">
-            {players.map((player, index) => (
+            {Array.isArray(players) && players.map((player, index) => (
               <motion.div
                 key={player.id}
                 className={`player-card ${player.is_exposed ? 'exposed' : ''}`}
@@ -177,7 +183,7 @@ const PvPPanel = ({ user, updateUser }) => {
             ))}
           </div>
 
-          {players.length === 0 && (
+          {(!Array.isArray(players) || players.length === 0) && (
             <div className="no-players">
               <p>&gt;&gt; No other players found in the system</p>
             </div>
@@ -188,7 +194,7 @@ const PvPPanel = ({ user, updateUser }) => {
           <h2>&gt;&gt; INTRUSION_LOG_HISTORY</h2>
           <p className="logs-subtitle">Players who tried to hack you:</p>
 
-          {intrusionLogs.length > 0 ? (
+          {Array.isArray(intrusionLogs) && intrusionLogs.length > 0 ? (
             <div className="logs-list">
               {intrusionLogs.slice().reverse().map((log, index) => (
                 <motion.div
