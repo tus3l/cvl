@@ -453,17 +453,114 @@
   margin: 20px 0;
 }
 
-/* Auto Spin Button Styles */
-.auto-spin-active {
-  animation: auto-spin-pulse 1s infinite !important;
+/* Auto Spin Button - العادي (أخضر متحرك) */
+.cyber-button.auto-spin-btn {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #00ff00, #00aa00, #00ff88, #00ff00) !important;
+  background-size: 300% 300% !important;
+  animation: auto-spin-green-gradient 3s ease infinite !important;
+}
+
+.cyber-button.auto-spin-btn > * {
+  position: relative;
+  z-index: 1;
+}
+
+.cyber-button.auto-spin-btn::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(0, 255, 255, 0.3) 45deg,
+    rgba(0, 255, 0, 0.5) 90deg,
+    transparent 135deg,
+    transparent 360deg
+  );
+  animation: auto-spin-rotate 3s linear infinite;
+}
+
+.cyber-button.auto-spin-btn::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: linear-gradient(135deg, #00ff00, #00aa00);
+  border-radius: 5px;
+  z-index: -1;
+}
+
+@keyframes auto-spin-green-gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Auto Spin Button Styles - رهيب! */
+.cyber-button.auto-spin-active {
+  position: relative;
+  overflow: hidden;
+  animation: auto-spin-pulse 1.5s infinite !important;
+  background: linear-gradient(135deg, #ff0000, #ff4500, #ff8c00, #ff0000) !important;
+  background-size: 300% 300% !important;
+  animation: auto-spin-gradient 3s ease infinite, auto-spin-pulse 1.5s infinite !important;
+}
+
+.cyber-button.auto-spin-active > * {
+  position: relative;
+  z-index: 1;
+}
+
+.cyber-button.auto-spin-active::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(255, 255, 0, 0.4) 45deg,
+    rgba(255, 0, 0, 0.6) 90deg,
+    transparent 135deg,
+    transparent 360deg
+  );
+  animation: auto-spin-rotate 2s linear infinite;
+}
+
+.cyber-button.auto-spin-active::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: linear-gradient(135deg, #ff0000, #ff4500);
+  border-radius: 5px;
+  z-index: -1;
+}
+
+@keyframes auto-spin-gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes auto-spin-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 @keyframes auto-spin-pulse {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(255, 0, 0, 0.6), 0 0 40px rgba(255, 0, 0, 0.4);
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.6), 0 0 40px rgba(255, 0, 0, 0.4), inset 0 0 20px rgba(255, 100, 0, 0.3);
+    transform: scale(1);
   }
   50% {
-    box-shadow: 0 0 30px rgba(255, 0, 0, 0.9), 0 0 60px rgba(255, 0, 0, 0.6);
+    box-shadow: 0 0 35px rgba(255, 0, 0, 1), 0 0 70px rgba(255, 100, 0, 0.8), inset 0 0 30px rgba(255, 150, 0, 0.5);
+    transform: scale(1.02);
   }
 }
 

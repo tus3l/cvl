@@ -237,7 +237,9 @@ const GameDashboard = () => {
         // Continue auto spin if enabled
         if (isAutoSpinning) {
           setAutoSpinCount(prev => prev + 1);
+          // Auto-close reward and continue spinning
           setTimeout(() => {
+            setShowReward(false);
             const currentCredits = res.data.user?.wallet?.crypto_credits || res.data.user?.crypto_credits || 0;
             const spinCost = getSpinCostClient(res.data.user?.level || 1);
             if (currentCredits >= spinCost) {
@@ -247,7 +249,7 @@ const GameDashboard = () => {
               setAutoSpinCount(0);
               setMessage('>> Auto spin stopped: Insufficient credits');
             }
-          }, 800); // Short delay before next spin
+          }, 1200); // Show reward briefly then continue
         }
       }, 750);
       
@@ -532,11 +534,13 @@ const GameDashboard = () => {
                   spinning || isAutoSpinning || ((user?.wallet?.crypto_credits || 0) < getSpinCostClient(user?.level || 1))
                 }
               >
-                [ EXECUTE_HACK ] ({getSpinCostClient(user?.level || 1)}💰)
+                <span style={{ position: 'relative', zIndex: 2 }}>
+                  [ EXECUTE_HACK ] ({getSpinCostClient(user?.level || 1)}💰)
+                </span>
               </motion.button>
               
               <motion.button 
-                className={`cyber-button ${isAutoSpinning ? 'auto-spin-active' : ''}`}
+                className={`cyber-button auto-spin-btn ${isAutoSpinning ? 'auto-spin-active' : ''}`}
                 onClick={() => {
                   if (isAutoSpinning) {
                     setIsAutoSpinning(false);
@@ -555,7 +559,9 @@ const GameDashboard = () => {
                   boxShadow: isAutoSpinning ? '0 0 20px rgba(255, 0, 0, 0.6)' : '0 0 20px rgba(0, 255, 0, 0.6)'
                 }}
               >
-                {isAutoSpinning ? `[ 🔴 STOP AUTO ] (${autoSpinCount})` : '[ 🟢 AUTO HACK ]'}
+                <span style={{ position: 'relative', zIndex: 2 }}>
+                  {isAutoSpinning ? `[ 🔴 STOP AUTO ] (${autoSpinCount})` : '[ 🟢 AUTO HACK ]'}
+                </span>
               </motion.button>
             </div>
           )}

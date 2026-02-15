@@ -14,6 +14,7 @@ const PvPPanel = ({ user, updateUser }) => {
   const [toast, setToast] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showLogs, setShowLogs] = useState(false);
+  const [attackResult, setAttackResult] = useState(null);
 
   useEffect(() => {
     loadPlayers();
@@ -53,14 +54,19 @@ const PvPPanel = ({ user, updateUser }) => {
       if (res.data.success) {
         updateUser(res.data.user);
         loadPlayers(); // Refresh player list
-        // Show outcome toast
+        // Show detailed result panel
         const o = res.data.outcome;
         const stats = res.data.stats;
-        const msg = o.success
-          ? `✓ تم الاختراق! تمت سرقة ${o.stolen?.credits ?? 0} كريدتس`
-          : `✗ فشل الاختراق: الدفاع صامد. نسبة النجاح ${stats?.success_chance}%`;
-        setToast({ message: msg, type: o.success ? 'success' : 'error' });
-        setTimeout(() => setToast(null), 3500);
+        setAttackResult({
+          success: o.success,
+          target: selectedTarget.username,
+          stolen: o.stolen?.credits ?? 0,
+          xpGained: o.xp_gained || 0,
+          repGained: o.rep_gained || 0,
+          attackScore: stats?.attack_score || 0,
+          defenseScore: stats?.defense_score || 0,
+          successChance: stats?.success_chance || 0
+        });
         return {
           ...res.data.outcome,
           stats: res.data.stats
@@ -275,6 +281,97 @@ const PvPPanel = ({ user, updateUser }) => {
           </div>
         </div>
       )}
+
+      {/* Attack Result Panel */}
+      <AnimatePresence>
+        {attackResult && (
+          <motion.div
+            className="attack-result-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setAttackResult(null)}
+          >
+            <motion.div
+              className={`attack-result-panel ${attackResult.success ? 'result-success' : 'result-failed'}`}
+              initial={{ scale: 0, y: -50 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0, y: 50 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="result-header">
+                <h2 className="neon-glow">
+                  {attackResult.success ? '🔓 BREACH SUCCESSFUL' : '🛡️ ATTACK BLOCKED'}
+                </h2>
+                <div className="result-target">Target: {attackResult.target}</div>
+              </div>
+
+              <div className="result-stats">
+                <div className="stat-card">
+                  <div className="stat-icon">💰</div>
+                  <div className="stat-info">
+                    <div className="stat-label">Credits Stolen</div>
+                    <div className="stat-value" style={{ color: attackResult.success ? '#00ff00' : '#ff4444' }}>
+                      {attackResult.success ? `+${attackResult.stolen}` : '0'}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="stat-card">
+                  <div className="stat-icon">⚔️</div>
+                  <div className="stat-info">
+                    <div className="stat-label">Attack Power</div>
+                    <div className="stat-value">{attackResult.attackScore}</div>
+                  </div>
+                </div>
+
+                <div className="stat-card">
+                  <div className="stat-icon">🛡️</div>
+                  <div className="stat-info">
+                    <div className="stat-label">Defense Power</div>
+                    <div className="stat-value">{attackResult.defenseScore}</div>
+                  </div>
+                </div>
+
+                <div className="stat-card">
+                  <div className="stat-icon">📊</div>
+                  <div className="stat-info">
+                    <div className="stat-label">Success Rate</div>
+                    <div className="stat-value">{attackResult.successChance}%</div>
+                  </div>
+                </div>
+
+                {attackResult.success && (
+                  <>
+                    <div className="stat-card">
+                      <div className="stat-icon">✨</div>
+                      <div className="stat-info">
+                        <div className="stat-label">XP Gained</div>
+                        <div className="stat-value" style={{ color: '#00ffff' }}>+{attackResult.xpGained}</div>
+                      </div>
+                    </div>
+
+                    <div className="stat-card">
+                      <div className="stat-icon">🏆</div>
+                      <div className="stat-info">
+                        <div className="stat-label">Reputation</div>
+                        <div className="stat-value" style={{ color: '#ffd700' }}>+{attackResult.repGained}</div>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              <button
+                className="cyber-button result-close-btn"
+                onClick={() => setAttackResult(null)}
+              >
+                [ CONTINUE ]
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
