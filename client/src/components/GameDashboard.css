@@ -453,6 +453,20 @@
   margin: 20px 0;
 }
 
+/* Auto Spin Button Styles */
+.auto-spin-active {
+  animation: auto-spin-pulse 1s infinite !important;
+}
+
+@keyframes auto-spin-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.6), 0 0 40px rgba(255, 0, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(255, 0, 0, 0.9), 0 0 60px rgba(255, 0, 0, 0.6);
+  }
+}
+
 .hacking-animation {
   min-height: 200px;
   display: flex;

@@ -28,6 +28,8 @@ const GameDashboard = () => {
   const [slots, setSlots] = useState(['?', '?', '?']); // The 3 slot machine reels
   const [slotsStopped, setSlotsStopped] = useState([false, false, false]); // Track which slots have stopped
   const [timeTick, setTimeTick] = useState(0); // re-render timer overlays
+  const [isAutoSpinning, setIsAutoSpinning] = useState(false); // Auto spin state
+  const [autoSpinCount, setAutoSpinCount] = useState(0); // Count auto spins
 
   const getSpinCostClient = (level) => {
     const lvl = Math.max(1, level || 1);
@@ -163,19 +165,19 @@ const GameDashboard = () => {
       // Stop slots sequentially (suspense effect!)
       const finalSlots = res.data.slots || ['?', '?', '?'];
       
-      // Stop slot 1
+      // Stop slot 1 (faster!)
       setTimeout(() => {
         setSlots([finalSlots[0], '?', '?']);
         setSlotsStopped([true, false, false]);
-      }, 500);
+      }, 250);
       
-      // Stop slot 2
+      // Stop slot 2 (faster!)
       setTimeout(() => {
         setSlots([finalSlots[0], finalSlots[1], '?']);
         setSlotsStopped([true, true, false]);
-      }, 1000);
+      }, 500);
       
-      // Stop slot 3 and show result
+      // Stop slot 3 and show result (faster!)
       setTimeout(() => {
         setSlots(finalSlots);
         setSlotsStopped([true, true, true]);
@@ -231,7 +233,23 @@ const GameDashboard = () => {
         updateUser(res.data.user);
         setSpinning(false);
         setHackingText('');
-      }, 1500);
+        
+        // Continue auto spin if enabled
+        if (isAutoSpinning) {
+          setAutoSpinCount(prev => prev + 1);
+          setTimeout(() => {
+            const currentCredits = res.data.user?.wallet?.crypto_credits || res.data.user?.crypto_credits || 0;
+            const spinCost = getSpinCostClient(res.data.user?.level || 1);
+            if (currentCredits >= spinCost) {
+              executeHack();
+            } else {
+              setIsAutoSpinning(false);
+              setAutoSpinCount(0);
+              setMessage('>> Auto spin stopped: Insufficient credits');
+            }
+          }, 800); // Short delay before next spin
+        }
+      }, 750);
       
     } catch (error) {
       clearInterval(textInterval);
@@ -504,17 +522,42 @@ const GameDashboard = () => {
           </AnimatePresence>
 
           {!spinning && !showReward && (
-            <motion.button 
-              className="cyber-button hack-button"
-              onClick={executeHack}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              disabled={
-                spinning || ((user?.wallet?.crypto_credits || 0) < getSpinCostClient(user?.level || 1))
-              }
-            >
-              [ EXECUTE_HACK_SEQUENCE ] ({getSpinCostClient(user?.level || 1)}💰)
-            </motion.button>
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <motion.button 
+                className="cyber-button hack-button"
+                onClick={executeHack}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                disabled={
+                  spinning || isAutoSpinning || ((user?.wallet?.crypto_credits || 0) < getSpinCostClient(user?.level || 1))
+                }
+              >
+                [ EXECUTE_HACK ] ({getSpinCostClient(user?.level || 1)}💰)
+              </motion.button>
+              
+              <motion.button 
+                className={`cyber-button ${isAutoSpinning ? 'auto-spin-active' : ''}`}
+                onClick={() => {
+                  if (isAutoSpinning) {
+                    setIsAutoSpinning(false);
+                    setAutoSpinCount(0);
+                  } else {
+                    setIsAutoSpinning(true);
+                    setAutoSpinCount(0);
+                    executeHack();
+                  }
+                }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                disabled={spinning || ((user?.wallet?.crypto_credits || 0) < getSpinCostClient(user?.level || 1))}
+                style={{
+                  background: isAutoSpinning ? 'linear-gradient(135deg, #ff0000, #ff4500)' : 'linear-gradient(135deg, #00ff00, #00aa00)',
+                  boxShadow: isAutoSpinning ? '0 0 20px rgba(255, 0, 0, 0.6)' : '0 0 20px rgba(0, 255, 0, 0.6)'
+                }}
+              >
+                {isAutoSpinning ? `[ 🔴 STOP AUTO ] (${autoSpinCount})` : '[ 🟢 AUTO HACK ]'}
+              </motion.button>
+            </div>
           )}
 
           <AnimatePresence>
