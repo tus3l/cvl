@@ -143,7 +143,7 @@ const attackPlayer = async (req, res) => {
       
       // Update equipment and inventory if DDoS was used
       if (ddosUsed) {
-        attackerUpdate.equipped_loadout = eqA;
+        attackerUpdate.equipment = eqA;
         if (updatedInventory) {
           attackerUpdate.inventory = updatedInventory;
         }
@@ -171,7 +171,7 @@ const attackPlayer = async (req, res) => {
       
       // Update equipment if DDoS was used even on failed attack
       if (ddosUsed) {
-        attackerUpdate.equipped_loadout = eqA;
+        attackerUpdate.equipment = eqA;
         if (updatedInventory) {
           attackerUpdate.inventory = updatedInventory;
         }
@@ -206,7 +206,8 @@ const attackPlayer = async (req, res) => {
         crypto_credits: updatedAttacker.crypto_credits,
         rare_gems: updatedAttacker.rare_gems,
         reputation: updatedAttacker.reputation,
-        equipped_loadout: updatedAttacker.equipped_loadout || {}
+        equipment: updatedAttacker.equipment || {},
+        equipped_loadout: updatedAttacker.equipped_loadout || {} // For backward compatibility
       },
       stats: {
         attack_score: attackScore,

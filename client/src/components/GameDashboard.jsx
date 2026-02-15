@@ -37,6 +37,29 @@ const GameDashboard = () => {
     return 150 * Math.pow(2, step);
   };
 
+  // Calculate hack duration based on equipped items
+  const calculateHackDuration = () => {
+    let baseDuration = 2; // 2 seconds base
+    const equipment = user?.equipment || {};
+    
+    // Check each equipment slot
+    Object.values(equipment).forEach(item => {
+      if (!item || !item.code) return;
+      
+      // Rusty items: +0.3s each (CPU, RAM, Cooling)
+      if (item.code === 'rusty_cpu' || item.code === 'rusty_ram' || item.code === 'rusty_cooling') {
+        baseDuration += 0.3;
+      }
+      
+      // Quantum CPU: +1.5s
+      if (item.code === 'quantum_cpu') {
+        baseDuration += 1.5;
+      }
+    });
+    
+    return baseDuration;
+  };
+
   // Discover backend base and set axios defaults
   useEffect(() => {
     (async () => {
@@ -538,8 +561,8 @@ const GameDashboard = () => {
                         { width: '100%' }
                       }
                       transition={user?.ddos_freeze_until && new Date(user.ddos_freeze_until) > new Date() ?
-                        { duration: 5, times: [0, 0.2, 0.8, 1] } :
-                        { duration: 2 }
+                        { duration: calculateHackDuration() + 3, times: [0, 0.2, 0.8, 1] } :
+                        { duration: calculateHackDuration() }
                       }
                     />
                     {user?.ddos_freeze_until && new Date(user.ddos_freeze_until) > new Date() && (
