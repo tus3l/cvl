@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
@@ -30,6 +30,7 @@ const GameDashboard = () => {
   const [timeTick, setTimeTick] = useState(0); // re-render timer overlays
   const [isAutoSpinning, setIsAutoSpinning] = useState(false); // Auto spin state
   const [autoSpinCount, setAutoSpinCount] = useState(0); // Count auto spins
+  const autoSpinRef = useRef(false); // Reference to track auto spin state immediately
 
   const getSpinCostClient = (level) => {
     const lvl = Math.max(1, level || 1);
@@ -126,7 +127,7 @@ const GameDashboard = () => {
     };
   }, [activeTab, backendBase]);
 
-  const executeHack = async () => {
+  const executeHack = async (overrideCredits = null, overrideLevel = null, isAuto = false) => {
     setSpinning(true);
     setShowReward(false);
     setReward(null);
@@ -138,12 +139,19 @@ const GameDashboard = () => {
     const isDDoSFrozen = user?.ddos_freeze_until && new Date(user.ddos_freeze_until) > new Date();
 
     // Pre-check: إذا الرصيد أقل من تكلفة السبن، لا تنفذ الطلب وخفظ رسالة
-    const requiredCost = getSpinCostClient(user?.level || 1);
-    const currentCredits = user?.wallet?.crypto_credits || 0;
+    const levelToUse = overrideLevel !== null ? overrideLevel : (user?.level || 1);
+    const requiredCost = getSpinCostClient(levelToUse);
+    const currentCredits = overrideCredits !== null ? overrideCredits : (user?.wallet?.crypto_credits || 0);
     if (currentCredits < requiredCost) {
       setSpinning(false);
       setHackingText('');
       setMessage(`>> INSUFFICIENT_FUNDS: Need ${requiredCost} crypto_credits (Current: ${currentCredits})`);
+      // Stop auto spin if running
+      if (isAutoSpinning || autoSpinRef.current) {
+        setIsAutoSpinning(false);
+        autoSpinRef.current = false;
+        setAutoSpinCount(0);
+      }
       // لا تُظهر X X X — خليها رموز توقعية
       setSlots(['?', '?', '?']);
       setSlotsStopped([true, true, true]);
@@ -260,21 +268,43 @@ const GameDashboard = () => {
         setSpinning(false);
         setHackingText('');
         
-        // Continue auto spin if enabled
-        if (isAutoSpinning) {
+        // Continue auto spin if enabled and not stopped
+        if ((isAuto || isAutoSpinning) && autoSpinRef.current) {
           setAutoSpinCount(prev => prev + 1);
-          // Check credits immediately
-          const currentCredits = res.data.user?.crypto_credits || 0;
-          const spinCost = getSpinCostClient(res.data.user?.level || 1);
+          // Check credits immediately from response data
+          const updatedCredits = res.data.user?.wallet?.crypto_credits || res.data.user?.crypto_credits || 0;
+          const updatedLevel = res.data.user?.level || 1;
+          const spinCost = getSpinCostClient(updatedLevel);
           
-          if (currentCredits >= spinCost) {
-            // Auto-close reward and continue spinning
+          // Check if got item reward - stop auto spin
+          const gotItemReward = outcome.type === 'item' && !outcome.isDiamond;
+          
+          console.log('=== AUTO SPIN CHECK ===');
+          console.log('Updated Credits:', updatedCredits);
+          console.log('Spin Cost:', spinCost);
+          console.log('Got Item Reward?', gotItemReward);
+          console.log('Auto Spin Active?', autoSpinRef.current);
+          console.log('Can Continue?', updatedCredits >= spinCost && !gotItemReward);
+          console.log('=====================');
+          
+          if (gotItemReward) {
+            // Stop auto spin when item reward is received
+            setIsAutoSpinning(false);
+            autoSpinRef.current = false;
+            setAutoSpinCount(0);
+            setMessage(message + ' >> Auto spin stopped: Item reward received!');
+          } else if (updatedCredits >= spinCost) {
+            // Auto-close reward and continue spinning with updated values
             setTimeout(() => {
-              setShowReward(false);
-              executeHack();
+              // Check again if still auto spinning (user might have stopped)
+              if (autoSpinRef.current) {
+                setShowReward(false);
+                executeHack(updatedCredits, updatedLevel, true);
+              }
             }, 800); // Quick delay then continue
           } else {
             setIsAutoSpinning(false);
+            autoSpinRef.current = false;
             setAutoSpinCount(0);
             setMessage('>> Auto spin stopped: Insufficient credits');
           }
@@ -291,6 +321,12 @@ const GameDashboard = () => {
       setMessage(friendly);
       setSpinning(false);
       setHackingText('');
+      // Stop auto spin on error
+      if (isAutoSpinning || autoSpinRef.current) {
+        setIsAutoSpinning(false);
+        autoSpinRef.current = false;
+        setAutoSpinCount(0);
+      }
       // لا تُظهر X X X في أخطاء متوقعة مثل نقص الرصيد
       if (status === 400) {
         setSlotsStopped([true, true, true]);
@@ -599,7 +635,7 @@ const GameDashboard = () => {
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
               <motion.button 
                 className="cyber-button hack-button"
-                onClick={executeHack}
+                onClick={() => executeHack()}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 disabled={
@@ -611,24 +647,42 @@ const GameDashboard = () => {
                 </span>
               </motion.button>
               
-              <motion.button 
-                className={`cyber-button auto-spin-btn ${isAutoSpinning ? 'auto-spin-active' : ''}`}
-                onClick={() => {
-                  if (isAutoSpinning) {
-                    setIsAutoSpinning(false);
-                    setAutoSpinCount(0);
-                  } else {
+              {!isAutoSpinning && (
+                <motion.button 
+                  className="cyber-button auto-spin-btn"
+                  onClick={() => {
                     setIsAutoSpinning(true);
+                    autoSpinRef.current = true;
                     setAutoSpinCount(0);
-                    executeHack();
-                  }
+                    executeHack(null, null, true);
+                  }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  disabled={spinning || ((user?.wallet?.crypto_credits || 0) < getSpinCostClient(user?.level || 1))}
+                >
+                  <span style={{ position: 'relative', zIndex: 2, fontSize: '1.1rem', fontWeight: 'bold' }}>
+                    🤖 AUTO HACK MODE
+                  </span>
+                </motion.button>
+              )}
+            </div>
+          )}
+
+          {isAutoSpinning && (
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '10px' }}>
+              <motion.button 
+                className="cyber-button auto-spin-active"
+                onClick={() => {
+                  setIsAutoSpinning(false);
+                  autoSpinRef.current = false;
+                  setAutoSpinCount(0);
                 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                disabled={spinning || ((user?.wallet?.crypto_credits || 0) < getSpinCostClient(user?.level || 1))}
+                style={{ minWidth: '280px' }}
               >
-                <span style={{ position: 'relative', zIndex: 2, fontSize: '1.1rem', fontWeight: 'bold' }}>
-                  {isAutoSpinning ? `🛑 STOP AUTO (${autoSpinCount} spins)` : '🤖 AUTO HACK MODE'}
+                <span style={{ position: 'relative', zIndex: 2, fontSize: '1.2rem', fontWeight: 'bold' }}>
+                  🛑 STOP AUTO ({autoSpinCount} spins)
                 </span>
               </motion.button>
             </div>
