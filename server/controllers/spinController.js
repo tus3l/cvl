@@ -118,8 +118,9 @@ async function getMergedIconVariants() {
       merged[r] = Array.from(new Set([...(merged[r] || []), ...icons]));
     });
     // Manual weighting for special icons
-    // Make Zero-Day extremely rare as a reel icon but still visible sometimes
-    ICON_WEIGHT_MAP['/rewards/Zero_Day.png'] = 0.5;
+    // Make Zero-Day appear more often in reels (5x more likely than before!)
+    // BUT triple match stays at 0.05% for ultimate rarity
+    ICON_WEIGHT_MAP['/rewards/Zero_Day.png'] = 5;
     // Keep FlashHacker more likely among legendary icons to represent typical legendary
     ICON_WEIGHT_MAP['/rewards/flashHacker.png'] = 25;
     DYNAMIC_SLOT_ICONS = merged;
@@ -261,7 +262,7 @@ function injectSpecialItems(manifest) {
     name: 'DDoS Cannon',
     equippable: true,
     attack_power: 75,
-    durability: { max: 15, current: 15 }
+    durability: { max: 3, current: 3 }
   });
 
   // --- Epic Tier: RTX 4090 Mining Rig ---
@@ -677,7 +678,7 @@ exports.executeSpin = async (req, res) => {
                       if (reward.code === 'ddos_cannon') {
                         itemData.equippable = true;
                         itemData.attack_power = itemData.attack_power || 75;
-                        itemData.durability = itemData.durability || { max: 15, current: 15 };
+                        itemData.durability = itemData.durability || { max: 3, current: 3 };
                       }
             
             // 🔥 FLASHHACKER BONUS: 25,000 - 120,000 Credits

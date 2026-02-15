@@ -67,14 +67,35 @@ const attackPlayer = async (req, res) => {
     }
 
     // Optional equipment: gear boosts attack power if present (no gating)
-    const eqA = attacker.equipped_loadout || attacker.equipment || {};
+    const eqA = attacker.equipment || attacker.equipped_loadout || {};
 
     // Calculate scores
     const mgScore = typeof req.body.miniGameScore === 'number' ? req.body.miniGameScore : 0;
     const baseAttack = (loadout?.hardware?.level || 0) + (loadout?.software?.level || 0) + ((loadout?.crew?.skill_level || 0) * 2) + mgScore;
     let equipBoost = 0;
+    
+    // DDoS Cannon - primary weapon with durability
+    let ddosUsed = false;
+    let updatedInventory = null;
     const pw = eqA['attack:primaryWeapon'];
-    if (pw) equipBoost += (typeof pw.attack_power === 'number' ? pw.attack_power : 50);
+    if (pw) {
+      equipBoost += (typeof pw.attack_power === 'number' ? pw.attack_power : 50);
+      // Check if it's DDoS with durability
+      if (pw.durability && typeof pw.durability.current === 'number' && pw.durability.current > 0) {
+        ddosUsed = true;
+        // Decrease durability
+        pw.durability.current -= 1;
+        // If durability reaches 0, remove from equipment
+        if (pw.durability.current <= 0) {
+          delete eqA['attack:primaryWeapon'];
+          // Also remove from inventory
+          updatedInventory = (attacker.inventory || []).filter(item => {
+            return !(item.code === pw.code && item.filePath === pw.filePath);
+          });
+        }
+      }
+    }
+    
     const ex = eqA['attack:exploit'];
     if (ex) equipBoost += 30;
     if (eqA['core:cpu']) equipBoost += 20;
@@ -86,7 +107,7 @@ const attackPlayer = async (req, res) => {
     const activeDefense = target.active_defense || {};
     const defenseActive = activeDefense.expiresAt ? (new Date(activeDefense.expiresAt).getTime() > nowTs) : !!activeDefense.level;
     const defenseLevel = defenseActive ? (activeDefense.level || 0) : 0;
-    const eqT = target.equipped_loadout || target.equipment || {};
+    const eqT = target.equipment || target.equipped_loadout || {};
     let defenseEquipBoost = 0;
     if (eqT['defense:firewall']) defenseEquipBoost += 30;
     const defenseScore = defenseLevel + defenseEquipBoost + (target.level * 10);
@@ -119,6 +140,19 @@ const attackPlayer = async (req, res) => {
       attackerUpdate.crypto_credits = attacker.crypto_credits - 100 + stolenAmount;
       attackerUpdate.rare_gems = attacker.rare_gems + stolenGems;
       attackerUpdate.reputation = attacker.reputation + 50;
+      
+      // Update equipment and inventory if DDoS was used
+      if (ddosUsed) {
+        attackerUpdate.equipped_loadout = eqA;
+        if (updatedInventory) {
+          attackerUpdate.inventory = updatedInventory;
+        }
+      }
+      
+      // Add DDoS freeze effect to target
+      if (ddosUsed) {
+        targetUpdate.ddos_freeze_until = new Date(Date.now() + 3000).toISOString(); // 3 seconds
+      }
 
       targetUpdate.crypto_credits = target.crypto_credits - stolenAmount;
       targetUpdate.rare_gems = target.rare_gems - stolenGems;
@@ -128,17 +162,28 @@ const attackPlayer = async (req, res) => {
         success: true,
         type: 'success',
         message: `>> BREACH_SUCCESSFUL: Extracted ${stolenAmount} Credits + ${stolenGems} Gems from ${target.username}`,
-        stolen: { credits: stolenAmount, gems: stolenGems }
+        stolen: { credits: stolenAmount, gems: stolenGems },
+        ddosUsed: ddosUsed
       };
     } else {
       // Blocked
       attackerUpdate.reputation = Math.max(0, attacker.reputation - 10);
+      
+      // Update equipment if DDoS was used even on failed attack
+      if (ddosUsed) {
+        attackerUpdate.equipped_loadout = eqA;
+        if (updatedInventory) {
+          attackerUpdate.inventory = updatedInventory;
+        }
+      }
+      
       targetUpdate.reputation = target.reputation + 25;
 
       outcome = {
         success: false,
         type: 'blocked',
-        message: `>> ATTACK_BLOCKED: ${target.username}'s defense held strong${defenseActive && activeDefense.kind ? ` [${activeDefense.kind.toUpperCase()}]` : ''}`
+        message: `>> ATTACK_BLOCKED: ${target.username}'s defense held strong${defenseActive && activeDefense.kind ? ` [${activeDefense.kind.toUpperCase()}]` : ''}`,
+        ddosUsed: ddosUsed
       };
     }
 

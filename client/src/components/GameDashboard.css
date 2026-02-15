@@ -3,6 +3,74 @@
   padding: 20px;
 }
 
+/* DDoS Attack Warning - رهيب وملفت! */
+.ddos-attack-warning {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 99999;
+  background: linear-gradient(135deg, rgba(255, 0, 0, 0.95), rgba(255, 100, 0, 0.95));
+  border-bottom: 4px solid #ff0000;
+  padding: 15px;
+  animation: ddos-pulse 0.5s infinite, ddos-shake 0.3s infinite;
+  box-shadow: 0 5px 30px rgba(255, 0, 0, 0.8), inset 0 0 30px rgba(255, 255, 0, 0.3);
+}
+
+.ddos-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.ddos-icon {
+  font-size: 3rem;
+  animation: ddos-spin 1s linear infinite;
+  filter: drop-shadow(0 0 10px #ffff00);
+}
+
+.ddos-text {
+  text-align: center;
+}
+
+.ddos-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 0 0 20px #ffff00, 0 0 30px #ff0000;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 3px;
+}
+
+.ddos-subtitle {
+  font-size: 1.2rem;
+  color: #ffff00;
+  margin-top: 5px;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 0 10px #ff0000;
+}
+
+@keyframes ddos-pulse {
+  0%, 100% {
+    background: linear-gradient(135deg, rgba(255, 0, 0, 0.95), rgba(255, 100, 0, 0.95));
+  }
+  50% {
+    background: linear-gradient(135deg, rgba(255, 100, 0, 0.95), rgba(255, 0, 0, 0.95));
+  }
+}
+
+@keyframes ddos-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+@keyframes ddos-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .dashboard-header {
   display: flex;
   justify-content: space-between;
@@ -453,18 +521,29 @@
   margin: 20px 0;
 }
 
-/* Auto Spin Button - العادي (أخضر متحرك) */
+/* Auto Spin Button - العادي (أخضر واضح ومتحرك) */
 .cyber-button.auto-spin-btn {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #00ff00, #00aa00, #00ff88, #00ff00) !important;
+  background: linear-gradient(135deg, #00ff00, #00dd00, #00ff88, #00ff00) !important;
   background-size: 300% 300% !important;
   animation: auto-spin-green-gradient 3s ease infinite !important;
+  border: 3px solid #00ff00 !important;
+  box-shadow: 0 0 25px rgba(0, 255, 0, 0.7), inset 0 0 15px rgba(0, 255, 0, 0.3) !important;
+  font-size: 1.1rem !important;
+  font-weight: bold !important;
+  padding: 18px 35px !important;
+}
+
+.cyber-button.auto-spin-btn:hover {
+  box-shadow: 0 0 35px rgba(0, 255, 0, 0.9), inset 0 0 20px rgba(0, 255, 0, 0.4) !important;
+  transform: translateY(-2px);
 }
 
 .cyber-button.auto-spin-btn > * {
   position: relative;
   z-index: 1;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 255, 0, 0.6);
 }
 
 .cyber-button.auto-spin-btn::before {
@@ -500,7 +579,7 @@
   100% { background-position: 0% 50%; }
 }
 
-/* Auto Spin Button Styles - رهيب! */
+/* Auto Spin Button Styles - رهيب وواضح! */
 .cyber-button.auto-spin-active {
   position: relative;
   overflow: hidden;
@@ -508,11 +587,16 @@
   background: linear-gradient(135deg, #ff0000, #ff4500, #ff8c00, #ff0000) !important;
   background-size: 300% 300% !important;
   animation: auto-spin-gradient 3s ease infinite, auto-spin-pulse 1.5s infinite !important;
+  border: 3px solid #ff0000 !important;
+  box-shadow: 0 0 30px rgba(255, 0, 0, 0.8), inset 0 0 20px rgba(255, 100, 0, 0.4) !important;
+  font-size: 1.1rem !important;
+  font-weight: bold !important;
 }
 
 .cyber-button.auto-spin-active > * {
   position: relative;
   z-index: 1;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.9), 0 0 20px rgba(255, 0, 0, 0.7);
 }
 
 .cyber-button.auto-spin-active::before {

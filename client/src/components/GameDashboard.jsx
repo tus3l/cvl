@@ -111,6 +111,9 @@ const GameDashboard = () => {
     setSlots(['?', '?', '?']);
     setSlotsStopped([false, false, false]);
 
+    // Check if user is DDoS frozen
+    const isDDoSFrozen = user?.ddos_freeze_until && new Date(user.ddos_freeze_until) > new Date();
+
     // Pre-check: إذا الرصيد أقل من تكلفة السبن، لا تنفذ الطلب وخفظ رسالة
     const requiredCost = getSpinCostClient(user?.level || 1);
     const currentCredits = user?.wallet?.crypto_credits || 0;
@@ -237,19 +240,21 @@ const GameDashboard = () => {
         // Continue auto spin if enabled
         if (isAutoSpinning) {
           setAutoSpinCount(prev => prev + 1);
-          // Auto-close reward and continue spinning
-          setTimeout(() => {
-            setShowReward(false);
-            const currentCredits = res.data.user?.wallet?.crypto_credits || res.data.user?.crypto_credits || 0;
-            const spinCost = getSpinCostClient(res.data.user?.level || 1);
-            if (currentCredits >= spinCost) {
+          // Check credits immediately
+          const currentCredits = res.data.user?.crypto_credits || 0;
+          const spinCost = getSpinCostClient(res.data.user?.level || 1);
+          
+          if (currentCredits >= spinCost) {
+            // Auto-close reward and continue spinning
+            setTimeout(() => {
+              setShowReward(false);
               executeHack();
-            } else {
-              setIsAutoSpinning(false);
-              setAutoSpinCount(0);
-              setMessage('>> Auto spin stopped: Insufficient credits');
-            }
-          }, 1200); // Show reward briefly then continue
+            }, 800); // Quick delay then continue
+          } else {
+            setIsAutoSpinning(false);
+            setAutoSpinCount(0);
+            setMessage('>> Auto spin stopped: Insufficient credits');
+          }
         }
       }, 750);
       
@@ -310,6 +315,20 @@ const GameDashboard = () => {
 
   return (
     <div className="game-dashboard">
+      {/* DDoS Attack Warning */}
+      {user?.ddos_freeze_until && new Date(user.ddos_freeze_until) > new Date() && (
+        <div className="ddos-attack-warning">
+          <div className="ddos-content">
+            <div className="ddos-icon">⚠️</div>
+            <div className="ddos-text">
+              <div className="ddos-title">⚡ DDOS ATTACK ⚡</div>
+              <div className="ddos-subtitle">System Frozen - {Math.max(0, Math.ceil((new Date(user.ddos_freeze_until).getTime() - Date.now())/1000))}s</div>
+            </div>
+            <div className="ddos-icon">⚠️</div>
+          </div>
+        </div>
+      )}
+      
       <div className="dashboard-header">
         <div className="user-info">
           <h1 className="neon-glow">&gt;&gt; WELCOME: {user?.username}</h1>
@@ -510,13 +529,43 @@ const GameDashboard = () => {
                   >
                     {hackingText}
                   </motion.div>
-                  <div className="progress-bar">
+                  <div className="progress-bar" style={{ position: 'relative' }}>
                     <motion.div 
                       className="progress-fill"
                       initial={{ width: 0 }}
-                      animate={{ width: '100%' }}
-                      transition={{ duration: 2 }}
+                      animate={user?.ddos_freeze_until && new Date(user.ddos_freeze_until) > new Date() ?
+                        { width: ['0%', '50%', '50%', '100%'] } :
+                        { width: '100%' }
+                      }
+                      transition={user?.ddos_freeze_until && new Date(user.ddos_freeze_until) > new Date() ?
+                        { duration: 5, times: [0, 0.2, 0.8, 1] } :
+                        { duration: 2 }
+                      }
                     />
+                    {user?.ddos_freeze_until && new Date(user.ddos_freeze_until) > new Date() && (
+                      <motion.div
+                        style={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
+                          color: '#ff0000',
+                          fontWeight: 'bold',
+                          fontSize: '1.2em',
+                          textShadow: '0 0 10px #ff0000',
+                          zIndex: 10,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px'
+                        }}
+                        animate={{ scale: [1, 1.1, 1] }}
+                        transition={{ duration: 0.5, repeat: Infinity }}
+                      >
+                        <span style={{ fontSize: '1.5em' }}>⚠️</span>
+                        DDoS ATTACK
+                        <span style={{ fontSize: '1.5em' }}>⚠️</span>
+                      </motion.div>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -535,7 +584,7 @@ const GameDashboard = () => {
                 }
               >
                 <span style={{ position: 'relative', zIndex: 2 }}>
-                  [ EXECUTE_HACK ] ({getSpinCostClient(user?.level || 1)}💰)
+                  ⚡ EXECUTE HACK ({getSpinCostClient(user?.level || 1)}💰)
                 </span>
               </motion.button>
               
@@ -554,13 +603,9 @@ const GameDashboard = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 disabled={spinning || ((user?.wallet?.crypto_credits || 0) < getSpinCostClient(user?.level || 1))}
-                style={{
-                  background: isAutoSpinning ? 'linear-gradient(135deg, #ff0000, #ff4500)' : 'linear-gradient(135deg, #00ff00, #00aa00)',
-                  boxShadow: isAutoSpinning ? '0 0 20px rgba(255, 0, 0, 0.6)' : '0 0 20px rgba(0, 255, 0, 0.6)'
-                }}
               >
-                <span style={{ position: 'relative', zIndex: 2 }}>
-                  {isAutoSpinning ? `[ 🔴 STOP AUTO ] (${autoSpinCount})` : '[ 🟢 AUTO HACK ]'}
+                <span style={{ position: 'relative', zIndex: 2, fontSize: '1.1rem', fontWeight: 'bold' }}>
+                  {isAutoSpinning ? `🛑 STOP AUTO (${autoSpinCount} spins)` : '🤖 AUTO HACK MODE'}
                 </span>
               </motion.button>
             </div>
