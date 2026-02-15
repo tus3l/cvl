@@ -130,7 +130,7 @@ const PvPPanel = ({ user, updateUser }) => {
       {!showLogs ? (
         <div className="players-section">
           <div className="section-info">
-            <p>💰 Attack Cost: 100 Credits | 💎 Steal up to 15% of target's wealth</p>
+            <p>💰 Attack Cost: 100 Credits | 💎 Steal up to 25% of target's wealth</p>
           </div>
 
           <div className="players-grid">
