@@ -77,6 +77,14 @@ async function equipItem(req, res) {
     // Remove selected from inventory and set equipment
     inv.splice(index, 1);
     eq[slot] = selected;
+    
+    // Debug: Log equipment state
+    console.log('=== EQUIPITEM DEBUG ===');
+    console.log('User:', userId);
+    console.log('Slot:', slot);
+    console.log('Item:', JSON.stringify(selected, null, 2));
+    console.log('Equipment after:', JSON.stringify(eq, null, 2));
+    console.log('=====================');
 
     // Optional: if equipping VPN in stealth slot, set active_defense readiness
     let active_defense = user.active_defense || null;

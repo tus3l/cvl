@@ -150,6 +150,24 @@ const Slot = ({ slotId, label, acceptTypes, equippedItem, onDropItem, onEject, o
           ) : (
             <div className="pixel-box" />
           )}
+          {equippedItem.durability && (
+            <div style={{
+              position: 'absolute',
+              bottom: '5px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              background: 'rgba(0, 0, 0, 0.8)',
+              padding: '2px 8px',
+              borderRadius: '4px',
+              fontSize: '0.75em',
+              color: equippedItem.durability.current > 1 ? '#00ff00' : '#ff0000',
+              fontWeight: 'bold',
+              border: '1px solid ' + (equippedItem.durability.current > 1 ? '#00ff00' : '#ff0000'),
+              boxShadow: '0 0 8px ' + (equippedItem.durability.current > 1 ? 'rgba(0,255,0,0.5)' : 'rgba(255,0,0,0.5)')
+            }}>
+              {equippedItem.durability.current}/{equippedItem.durability.max} USES
+            </div>
+          )}
         </div>
       )}
       {validHover === false && (
@@ -269,12 +287,14 @@ const MySystem = ({ user }) => {
         }
       } catch {}
       // Fallback: hydrate from auth payload if API not reachable
-      if (user && user.equipped_loadout) {
+      if (user && user.equipment) {
+        setEquipped(prev => ({ ...prev, ...user.equipment }));
+      } else if (user && user.equipped_loadout) {
         setEquipped(prev => ({ ...prev, ...user.equipped_loadout }));
       }
     };
     fetchEquipped();
-  }, []);
+  }, [user]);  // Re-fetch when user changes
 
   return (
     <div className="mysystem-container">

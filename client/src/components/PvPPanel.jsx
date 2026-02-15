@@ -71,7 +71,8 @@ const PvPPanel = ({ user, updateUser }) => {
           repGained: o.rep_gained || 0,
           attackScore: stats?.attack_score || 0,
           defenseScore: stats?.defense_score || 0,
-          successChance: stats?.success_chance || 0
+          successChance: stats?.success_chance || 0,
+          ddosUsed: o.ddosUsed || false
         });
         return {
           ...res.data.outcome,
@@ -310,6 +311,22 @@ const PvPPanel = ({ user, updateUser }) => {
                   {attackResult.success ? '🔓 BREACH SUCCESSFUL' : '🛡️ ATTACK BLOCKED'}
                 </h2>
                 <div className="result-target">Target: {attackResult.target}</div>
+                {attackResult.ddosUsed && (
+                  <div style={{
+                    marginTop: '10px',
+                    padding: '8px 12px',
+                    background: 'linear-gradient(135deg, #ff0000, #ff4400)',
+                    borderRadius: '6px',
+                    fontSize: '0.9em',
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    boxShadow: '0 0 20px rgba(255, 0, 0, 0.6)',
+                    animation: 'pulse 1s infinite'
+                  }}>
+                    ⚠️ DDoS ATTACK DEPLOYED ⚠️<br/>
+                    <span style={{ fontSize: '0.85em', opacity: 0.9 }}>Target frozen for 3 seconds</span>
+                  </div>
+                )}
               </div>
 
               <div className="result-stats">

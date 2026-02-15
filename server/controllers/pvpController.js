@@ -68,6 +68,13 @@ const attackPlayer = async (req, res) => {
 
     // Optional equipment: gear boosts attack power if present (no gating)
     const eqA = attacker.equipment || attacker.equipped_loadout || {};
+    
+    // Debug: Log equipment to verify DDoS is loaded
+    console.log('=== PVP ATTACK DEBUG ===');
+    console.log('Attacker:', attacker.username);
+    console.log('Equipment:', JSON.stringify(eqA, null, 2));
+    console.log('Primary Weapon:', eqA['attack:primaryWeapon']);
+    console.log('========================');
 
     // Calculate scores
     const mgScore = typeof req.body.miniGameScore === 'number' ? req.body.miniGameScore : 0;
