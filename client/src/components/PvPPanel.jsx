@@ -259,6 +259,7 @@ const PvPPanel = ({ user, updateUser }) => {
             <MatrixBreach
               cpuTier={cpuTier}
               firewallLevel={firewallLevel}
+              user={user}
               onFail={() => { setShowMiniGame(false); setSelectedTarget(null); }}
               onSuccess={async (score) => {
                 // After solving the sequence, show hacking status then execute

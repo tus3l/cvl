@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 // Matrix Breach Mini-Game (Cyberpunk/Terminal Style)
-// Props: cpuTier, firewallLevel, onSuccess(score), onFail()
-const MatrixBreach = ({ cpuTier = 0, firewallLevel = 0, onSuccess, onFail }) => {
+// Props: cpuTier, firewallLevel, user, onSuccess(score), onFail()
+const MatrixBreach = ({ cpuTier = 0, firewallLevel = 0, user = null, onSuccess, onFail }) => {
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 
   // Difficulty scaling
@@ -29,10 +29,13 @@ const MatrixBreach = ({ cpuTier = 0, firewallLevel = 0, onSuccess, onFail }) => 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(timeLimit);
   const [flash, setFlash] = useState(''); // '', 'red', 'green'
+  const [ddosFrozen, setDdosFrozen] = useState(false);
+  const [ddosFreezeProgress, setDdosFreezeProgress] = useState(0);
 
   const timerRef = useRef(null);
   const shuffleRef = useRef(null);
   const audioCtxRef = useRef(null);
+  const ddosFreezeStartRef = useRef(null);
 
   // WebAudio beeps
   const beep = (freq = 660, ms = 80) => {
@@ -75,9 +78,38 @@ const MatrixBreach = ({ cpuTier = 0, firewallLevel = 0, onSuccess, onFail }) => 
   // Timer + progress
   useEffect(() => {
     const startedAt = performance.now();
+    const isDDoSFrozen = user?.ddos_freeze_until && new Date(user.ddos_freeze_until) > new Date();
+    
     timerRef.current && clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
+        // Calculate progress percentage
+        const progPct = (prev / timeLimit) * 100;
+        
+        // Check if we should freeze at 50%
+        if (isDDoSFrozen && progPct <= 50 && progPct > 45 && !ddosFrozen && !ddosFreezeStartRef.current) {
+          // Trigger DDoS freeze
+          setDdosFrozen(true);
+          ddosFreezeStartRef.current = performance.now();
+          beep(300, 200); // Warning beep
+          return prev; // Don't decrease time
+        }
+        
+        // If frozen, check if 1.5s passed
+        if (ddosFrozen && ddosFreezeStartRef.current) {
+          const elapsed = performance.now() - ddosFreezeStartRef.current;
+          setDdosFreezeProgress(Math.min(100, (elapsed / 1500) * 100));
+          
+          if (elapsed >= 1500) {
+            // Unfreeze
+            setDdosFrozen(false);
+            ddosFreezeStartRef.current = null;
+            setDdosFreezeProgress(0);
+          } else {
+            return prev; // Stay frozen
+          }
+        }
+        
         const next = prev - 0.1;
         if (next <= 0) {
           clearInterval(timerRef.current);
@@ -100,7 +132,7 @@ const MatrixBreach = ({ cpuTier = 0, firewallLevel = 0, onSuccess, onFail }) => 
       timerRef.current && clearInterval(timerRef.current);
       shuffleRef.current && clearInterval(shuffleRef.current);
     };
-  }, [shuffleMs, onFail]);
+  }, [shuffleMs, onFail, user, timeLimit]);
 
   const clickCode = (cell, idx) => {
     if (!grid.length) return;
@@ -162,8 +194,29 @@ const MatrixBreach = ({ cpuTier = 0, firewallLevel = 0, onSuccess, onFail }) => 
             </button>
           ))}
         </div>
-        <div className="mb-timer">
+        <div className="mb-timer" style={{ position: 'relative' }}>
           <div className="bar" style={{ width: `${progPct}%`, background: progColor }} />
+          {ddosFrozen && (
+            <div style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              color: '#ff0000',
+              fontWeight: 'bold',
+              fontSize: '0.85em',
+              textShadow: '0 0 8px #ff0000',
+              zIndex: 10,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              animation: 'ddosPulse 0.5s infinite'
+            }}>
+              <span style={{ fontSize: '1.2em' }}>⚠️</span>
+              DDoS ATTACK
+              <span style={{ fontSize: '1.2em' }}>⚠️</span>
+            </div>
+          )}
         </div>
       </div>
       <style>{`
@@ -184,8 +237,9 @@ const MatrixBreach = ({ cpuTier = 0, firewallLevel = 0, onSuccess, onFail }) => 
         .mb-cell { background: #0a1410; border: 1px solid #145b34; color: #aaf0c9; padding: 10px; border-radius: 6px; cursor:pointer; transition: box-shadow 120ms, transform 120ms; }
         .mb-cell:hover { box-shadow: 0 0 12px #17ff3a; transform: translateY(-1px); }
         .cell-target { font-weight: 700; }
-        .mb-timer { height: 10px; margin: 10px 16px 16px; background: #111; border: 1px solid #145b34; border-radius: 6px; overflow: hidden; }
+        .mb-timer { height: 10px; margin: 10px 16px 16px; background: #111; border: 1px solid #145b34; border-radius: 6px; overflow: visible; position: relative; }
         .bar { height: 100%; transition: width 100ms linear; }
+        @keyframes ddosPulse { 0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.05); } }
       `}</style>
     </div>
   );
